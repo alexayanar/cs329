@@ -88,6 +88,13 @@ def turn_1b(res: SimpleNamespace):
     elif any(version):
         turn_2a(res)
 
+        #solution
+    phone = regex_matcher(res.re_phone, u)
+    res.in_phone_company = phone[0]
+    res.in_phone_name = phone[1]
+    if any(phone):
+        turn_1a(res)
+
     #find phone take to years used or version skip
 
 
@@ -126,6 +133,13 @@ def turn_3a(res: SimpleNamespace):
     old = year
     s = 'S: iphone {} is about {} years old'.format(res.in_phone_version, old)
     print(s)
+
+    #solution
+    version = res.in_phone_version
+    release_year = res.d_iphone_v.get(version, None)
+    if release_year:
+        old = 2020 - release_year
+        s = ..
 
 
 if __name__ == '__main__':

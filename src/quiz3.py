@@ -40,9 +40,9 @@ def antonyms(word: str, pos: Optional[str] = None) -> Set[str]:
 
 
 def lch_paths(word_0: str, word_1: str) -> List[List[Synset]]:
-    dogs = wn.synsets('dog', pos='n')
+    dogs = wn.synsets('dog')
     synset_0 = dogs[0]
-    cats = wn.synsets('cat', pos='n')
+    cats = wn.synsets('cat')
     synset_1 = cats[0]
     # synset_0 = wn.synset(word_0) error needed 3 values to unpack
     # when amended, given error need 2 values and 3 were given

@@ -2,7 +2,6 @@ from emora_stdm import KnowledgeBase, DialogueFlow
 from enum import Enum
 
 
-# TODO: Update the State enum as needed
 class State(Enum):
     START = 0
     INTRO = 1
@@ -50,7 +49,6 @@ class State(Enum):
 
 
 
-# TODO: create the ontology as needed
 ontology = {
     "ontology": {
         "affirmative": [

@@ -1,0 +1,1 @@
+def lch_paths(sense_0: str, sense_1: str) -> List[List[Synset]]

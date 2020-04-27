@@ -1,10 +1,63 @@
-from emora_stdm import KnowledgeBase, DialogueFlow
+from emora_stdm import KnowledgeBase, DialogueFlow, Macro, NatexNLG, NatexNLU
 from enum import Enum, auto
+from covid import Covid
 
+covid = Covid()
+
+
+########################################
+# STATES
+# TODO: Update State enum as needed
 
 class State(Enum):
-    START = auto()
+    START = 0
+    INTRO = 1
+    UPDATES = 2
+    STRESS2 = 3
+    INHALE = 4
+    VISION = 5
+    STRESSF = 6
+    FEEL = 7
+    INHALEF = 8
+    VISIONF = 9
+    NOGROUND = 10
+    HYGIENE = 11
+    GLOVES = 12
+    HYGIENEF = 13
+    SUSPECT = 14
+    SUSPECTF = 15
+    DIAGNOSE = 16
+    ABGROUND = 17
+    SAD = 18
+    SADF = 19
+    FRIENDS = 20
+    FRIENDSF = 21
+    FADVICE = 22
+    FADVICENO = 23
+    STRESS = 24
+    STRESS1 = 25
+    HEAR = 26
+    FEELF = 27
+    VACCINE = 28
+    VACCINEF = 29
+    WASHING = 30
+    WASHINGF = 31
+    ACTIVITY = 32
+    GARDEN = 33
+    GARDENF = 34
+    SMELL = 35
+    HEARF = 36
+    TASTE = 37
+    SMELLF = 38
+    TASTEF = 39
+    COMGROUND = 40
+    FUTURE = auto()
+    TRANSITION = auto()
+    CURRENT = auto()
+    ACTIVITIES = auto()
+    KEMP = auto()
     a0 = auto()
+    b0 = auto()
     a1 = auto()
     a2 = auto()
     a3 = auto()
@@ -24,7 +77,6 @@ class State(Enum):
     a19 = auto()
     a20 = auto()
     a21 = auto()
-    t01 = auto()
     t0 = auto()
     t1 = auto()
     t2 = auto()
@@ -66,58 +118,203 @@ class State(Enum):
     t38 = auto()
     t39 = auto()
     t40 = auto()
-    INTRO = auto()
-    b01 = auto()
-    b0 = auto()
     b1 = auto()
     b2 = auto()
     b3 = auto()
     b4 = auto()
+    b5 = auto()
+    b6 = auto()
+    b7 = auto()
+    b8 = auto()
+    b9 = auto()
+    b10 = auto()
+    b11 = auto()
+    b12 = auto()
+    b13 = auto()
+    b14 = auto()
+    b15 = auto()
+    b16 = auto()
+    b17 = auto()
+    b18 = auto()
+    b19 = auto()
+    b20 = auto()
+    b21 = auto()
+    b22 = auto()
+    b23 = auto()
+    b24 = auto()
+    b25 = auto()
+    b26 = auto()
+    b27 = auto()
+    b28 = auto()
+    b29 = auto()
     b30 = auto()
-    b31= auto()
+    b31 = auto()
     b32 = auto()
     b33 = auto()
     b34 = auto()
     b35 = auto()
     b36 = auto()
-    b36 = auto()
     b37 = auto()
     b38 = auto()
     b39 = auto()
     b40 = auto()
-    b31 = auto()
-    b
+    b41 = auto()
+    b42 = auto()
+    b43 = auto()
+    b44 = auto()
+    b45 = auto()
+    b46 = auto()
+    b47 = auto()
+    b48 = auto()
+    b49 = auto()
+    b50 = auto()
+    b51 = auto()
+    b52 = auto()
+    b53 = auto()
+    b54 = auto()
+    b55 = auto()
+    b56 = auto()
+    b57 = auto()
+    c0 = auto()
+    c1 = auto()
+    c2 = auto()
+    c3 = auto()
+    c4 = auto()
+    c5 = auto()
+    c6 = auto()
+    c7 = auto()
+    c8 = auto()
+    c9 = auto()
+    c10 = auto()
+    c11 = auto()
+    c12 = auto()
+    c13 = auto()
+    c14 = auto()
+    c15 = auto()
+    c16 = auto()
+    c17 = auto()
+    d0 = auto()
+    d1 = auto()
+    d2 = auto()
+    d3 = auto()
+    d4 = auto()
+    d5 = auto()
+    d6 = auto()
+    d7 = auto()
+    d8 = auto()
+    d9 = auto()
+    d10 = auto()
+    d11 = auto()
+    d12 = auto()
+    d13 = auto()
+    d14 = auto()
+    d15 = auto()
+    d16 = auto()
+    d17 = auto()
+    d18 = auto()
+    d19 = auto()
+    d20 = auto()
+    e0 = auto()
+    e1 = auto()
+    e2 = auto()
+    e3 = auto()
+    e4 = auto()
+    e5 = auto()
+    e6 = auto()
+    e7 = auto()
+    e8 = auto()
+    e9 = auto()
+    e10 = auto()
 
 
+    PIVOT1 = 200
+    TEST = 201
+    ERR1 = auto()
+    STRESS3 = auto()
+
+
+#########################################
+# ONTOLOGY
+# TODO: Update Ontology as needed
 
 ontology = {
+
     "ontology": {
         "yes": [
             "yeah",
-            "yes",
-            "cool",
-            "ok",
-            "okay",
-            "k",
-            "sounds good",
-            "sure",
             "yep",
-            "nice",
-            "yup",
+            "yes",
+            "sure",
             "definitely",
+            "yup",
+            "ok",
             "of course",
             "indeed",
+            "cool",
             "aight",
-            "alright"
+            "alright",
             "yea",
-            "i would love to"
+            "sure"
         ], "no": [
             "no",
             "nope",
             "not really",
             "don\'t",
             "not",
-            "nah"
+            "nah",
+            "something else"
+        ], "indifferent": [
+            "meh",
+            "maybe",
+            "perhaps"
+        ], "updates": [
+            "update", "updates",
+            "how many",
+            "cases",
+            "number of"
+        ], "stress": [
+            "stress", "stressed",
+            "pressure"
+        ], "hygiene": [
+            "cleanliness", "hygiene"
+        ], "test": [
+            "test"
+        ], "gloves": [
+            "gloves"
+        ], "sad": [
+            "sad",
+            "depressed",
+            "feeling blue"
+        ], "unsure": [
+            "I dont know",
+            "not sure",
+            "dunno",
+            "dont know for sure",
+            "i don't know",
+            "i dont know", "i can't say",
+            "i cant say"
+        ], "quit": [
+            "quit",
+            "dont feel like it",
+            "dont wanna",
+            "dont feel like doing this",
+            "dont want to do this",
+            "anymore"
+        ], "vaccine": [
+            "vaccine",
+            "vaccination"
+        ], "washing": [
+            "wash",
+            "washing",
+            "handwashing",
+            "hand washing",
+            "hand-washing",
+            "hands clean",
+            "clean hands",
+            "hand sanitizer"
+        ], "gardening": [
+            "garden",
+            "gardening"
         ], "romance": [
             "romance",
             "romantic",
@@ -195,19 +392,6 @@ ontology = {
             "children",
             "family",
             "innocent"
-        ], "crafts": [
-            "embroidery", "embroider",
-            "knitting", "knit",
-            "draw", "drawing",
-            "collages", "collage",
-            "paint", "painting",
-            "crafts", "crafting"
-        ], "movies": [
-            "movies", "movie",
-            "watch"
-        ], "journal": [
-            "journaling", "journal",
-            "writing", "write"
         ], "indoor": [
             "read", "reading",
             "solving", "solve", "puzzles",
@@ -264,17 +448,14 @@ ontology = {
             "see friends", "hit up", "my friends",
             "friends", "see", "hanging out", "friend",
             "family", "extended"
-        ], "suggestions": [  # takes you to suggestions loop
-            "bored", "boredom", "things to do", "what should i do",
-            "suggestions", "nothing to do", "anything to do"
-        ], "activities": [  # takes you to activities branch
-            "activities", "activity", "quarantine"
+        ], "current": [  # takes you to current branch
+            "current life", "quarantine"
         ], "normal": [
             "normalcy", "normal", "routine", "go back",
             "routines"
         ], "work": [
             "work", "working", "job", "jobs", "employed",
-            "unemployed"
+            "unemployed", "finding", "unemployment"
         ], "no-masks": [
             "masks", "gloves", "pre-cautions", "mask"
         ], "outofhouse": [
@@ -293,21 +474,254 @@ ontology = {
         ], "partner": [
             "girlfriend", "boo", "partner", "boyfriend", "fiancee", "fiance",
             "husband", "wife"
-        ], "future": [ #takes you to future branch
+        ], "future": [  # takes you to future branch
             "future", "happen", "happening", "end"
+        ], "activities": [  # suggestions branch
+            "activities", "suggestions", "activity",
+            "bored", "boredom", "anything to do", "nothing to do"
+        ], "pandemic": [
+            "pandemic", "cautious", "coronavirus", "covid", "covid-19", "covid19",
+            "no end", "quarantine", "social distancing", "social distance", "forever",
+            "disease", "germs", "flu", "virus", "death", "sickness", "death toll",
+            "sick", "opening", "too soon", "open", "reopen", "re-open"
+        ], "school": [
+            "class", "classes", "school", "college", "university",
+            "graduating", "graduation", "graduate",
+        ], "xenophobia": [
+            "xenophobia", "violence", "racism", "asians", "asian",
+            "china", "chinese"
+        ], "healthcare": [
+            "healthcare", "hospitals", "medicare", "medicaid",
+            "unaffordable", "bills", "not enough", "shortages",
+            "inadequate", "health", "nurses", "nurse", "doctors",
+            "doctor", "expensive", "testing", "tests"
+        ], "capitalism": [
+            "capitalism", "inequality", "healing", "slow down",
+            "capitalists", "society", "homeless", "homelessness",
+            "welfare", "government", "shortcomings", "politicians",
+            "businesses", "bail", "stimulus", "checks", "bills",
+            "rent"
+        ], "transition": [  # transition branch
+            "eviction", "evicted", "online classes", "student",
+            "semester", "online", "laid off", "fired", "quit",
+            "unemployed", "adjusting", "school", "class",
+            "classes", "university", "universities", "job",
+            "transition", "transitioning", "transitioned",
+            "adjusted"
+        ], "positive": [
+            "good", "well", "okay", "ok",
+            "nice", "great", "excellent", "excellent",
+            "super", "healthy", "fine", "well rested",
+            "peaceful", "sleep", "less stress", "calm",
+            "quiet", "on top of it", "on time",
+            "economy", "economics", "employment", "business",
+            "normal", "normalcy"
+        ], "negative": [
+            "bad", "not well", "eh", "poor", "poorly",
+            "challenging", "challenged", "detrimental",
+            "unhealthy", "terrible", "distressed",
+            "unfortunate", "distressing", "pathetic",
+            "crappy", "crap", "substandard", "sucks", "leave",
+            "anxious", "tired", "overwhelmed", "restless",
+            "exhausted", "stressed", "anxiety", "stress",
+            "so much", "too much", "procrastinating",
+            "procrastinated", "procrastinate",
+            "death toll", "death", "short", "short lived",
+            "idiot", "short-sighted", "inconsiderate",
+            "ruling class", "dangerous", "reckless",
+            "die"
+        ], "grounding": [
+            "grounding excercise", "yes", "breathe",
+            "yes", "yeah", "yup", "yea", "ya", "sure",
+            "grounding"
+        ], "kemp": [
+            "kemp", "governer", "georgia"
         ]
 
     }
 }
 
+##################################
+# MAIN METHOD
+
 knowledge = KnowledgeBase()
 knowledge.load_json(ontology)
 df = DialogueFlow(State.START, initial_speaker=DialogueFlow.Speaker.SYSTEM, kb=knowledge)
 
-# suggestions loop
-df.user_transition(State.INTRO, State.t01, r"[#ONT(suggestions)]")
+updates = r"[$response=#ONT(updates)]"
+stress = r"[$response=#ONT(stress)]"
+test = r"[$response=#ONT(test)]"
+hygiene = r"[$response=#ONT(hygiene)]"
+no = r"[$response=#ONT(no)]"
+yes = r"[$response=#ONT(yes)]"
+gloves = r"[$response=#ONT(gloves)]"
+suspect_old = r"[$response=#ONT(suspect)]"
+activities = r"[$response=#ONT(activities)]"
+current = r"[$response=#ONT(current)]"
+future = r"[$response=#ONT(future)]"
+transition = r"[$response=#ONT(transition)]"
+kemp = r"[$response=#ONT(kemp)]"
 
-df.add_system_transition(State.t01, State.t0, '"Would you like to hear some suggestions of fun activities to try?"')
+suspect = NatexNLU(
+    '{[i {think, believe, feel like} i {caught, got, have, contracted} {coronavirus, COVID, CoViD, covid}], '
+    '[i {might, may} have {coronavirus, COVID, CoViD, covid}]}')
+
+quit = NatexNLU('[dont] [{feel, wanna, want to}] [this]')
+sad = r"[$response=#ONT(sad)]"
+friends = r"[$response=#ONT(friends)]"
+unsure = r"[$response=#ONT(unsure)]"
+vaccine = r"[$response=#ONT(vaccine)]"
+washing = r"[$response=#ONT(washing)]"
+gardening = r"[$response=#ONT(gardening)]"
+
+actCases = str(covid.get_total_active_cases())
+recCases = str(covid.get_total_recovered())
+deaths = str(covid.get_total_deaths())
+
+# err = NatexNLG('[!{Hmm, Huh}, could you say that again`?`]')
+
+df.add_system_transition(State.START, State.INTRO,
+                         '"Hi! I\'m Qbot, your friend in quarantine! What would you like to talk about?"')
+
+df.add_user_transition(State.INTRO, State.UPDATES, updates)
+df.add_user_transition(State.INTRO, State.STRESS, stress)
+df.add_user_transition(State.INTRO, State.HYGIENE, hygiene)
+df.add_user_transition(State.INTRO, State.SUSPECT, suspect)
+df.add_user_transition(State.INTRO, State.SAD, sad)
+df.add_user_transition(State.INTRO, State.VACCINE, vaccine)
+df.add_user_transition(State.INTRO, State.ACTIVITY, activities)
+df.add_user_transition(State.INTRO, State.CURRENT, current)
+df.add_user_transition(State.INTRO, State.FUTURE, future)
+df.add_user_transition(State.INTRO, State.TRANSITION, transition)
+df.add_user_transition(State.INTRO, State.KEMP, kemp)
+# one branch for what can you do
+# another grounding exercise
+# practical advice for stress at home
+
+
+df.set_error_successor(State.INTRO, State.ERR1)
+
+df.add_system_transition(State.ERR1, State.INTRO, NatexNLG('[!{Hmm, Huh, Uhh, Mmm}, sorry I didn`\'`t get that, '
+                                                           'could you {rephrase that, say that again}`?`]'))
+
+df.add_system_transition(State.UPDATES, State.INTRO, '"As of now, there are "' + actCases + '" confirmed and active '
+                                                    'cases of COVID-19 in the world,"' + recCases + '"recoveries, and"'
+                                                    + deaths + '" deaths, \n I sure hope you\'re staying '
+                                                    'safe out there! What else can I help with?"')
+
+df.add_system_transition(State.VACCINE, State.VACCINEF, '"Unforuntately, as of now there is no vaccine for SARS-CoV, '
+                                                        'would you like some hygiene tips for staying healthy \n '
+                                                        'in the mean time?"')
+
+df.add_user_transition(State.VACCINEF, State.HYGIENE, yes)
+df.add_user_transition(State.VACCINEF, State.PIVOT1, no)
+
+df.add_system_transition(State.STRESS, State.STRESS1,'"I understand, life in quarantine is not easy. '
+                                                     'What\'s making you feel stressed right now?"')
+
+df.add_user_transition(State.STRESS1, State.STRESS2, unsure)
+df.add_user_transition(State.STRESS1, State.STRESS3, test)
+
+df.add_system_transition(State.STRESS2, State.STRESSF,
+                         '"Lot\'s of things can be causing stress, it\'s ok to not know '
+                         'but it\'s still good to acknowledge it! \n '
+                         'Would you like to do a grounding exercise with me?"')
+
+df.add_user_transition(State.STRESSF, State.INHALE, yes)
+df.add_user_transition(State.STRESSF, State.NOGROUND, no)
+
+df.add_system_transition(State.INHALE, State.INHALEF,
+                         '"Let\'s take five deep breaths, notice how your lungs and diaphragm '
+                         'expand upon inhaling, and contract while exhaling. Take your time \n '
+                         'and tell me when you\'re done."')
+df.add_user_transition(State.INHALEF, State.VISION, test)
+
+df.add_system_transition(State.VISION, State.VISIONF,
+                         '"Now, look around you and tell me something you can see around you."')
+df.add_user_transition(State.VISIONF, State.FEEL, '[$thing=#POS(noun)]')
+df.add_user_transition(State.VISIONF, State.ABGROUND, quit)
+
+df.add_system_transition(State.FEEL, State.FEELF,
+                         '$thing", how pretty, now tell me, what\'s something around you that you can '
+                         'feel with your hands? Describe it\'s texture."')
+df.add_user_transition(State.FEELF, State.HEAR, '[$thing=#POS(noun)]')
+df.add_user_transition(State.FEELF, State.ABGROUND, quit)
+
+df.add_system_transition(State.HEAR, State.HEARF,
+                         '"Excellent" $thing "texture. Now, what is something you can currently hear in the '
+                         'background?"')
+df.add_user_transition(State.HEARF, State.SMELL, '[$thing=#POS(noun)]')
+df.add_user_transition(State.HEARF, State.ABGROUND, quit)
+
+df.add_system_transition(State.SMELL, State.SMELLF,
+                         '"Ah yes the sound of" $thing ", that\'s a good answer! Close your eyes and breathe '
+                         'through your nose. Tell me what you can smell right now."')
+df.add_user_transition(State.SMELLF, State.ABGROUND, quit)
+df.add_user_transition(State.SMELLF, State.TASTE, '[$thing=#POS(noun)]')
+
+df.add_system_transition(State.TASTE, State.TASTEF,
+                         '"Nice! Just one more, focus on something you\'ve tasted recently, what was it?"')
+df.add_user_transition(State.TASTEF, State.ABGROUND, quit)
+df.add_user_transition(State.TASTEF, State.COMGROUND, '[$thing=#POS(noun)]')
+
+df.add_system_transition(State.COMGROUND, State.INTRO,
+                         '"Mmm," $thing "! I hope you\'re feeling a little calmer now. Are there any activities that '
+                         'you\'ve been doing to help you cope with stress?"')
+
+# todo finish the five senses exercise
+# todo expand stress dialogue paths
+
+df.add_system_transition(State.NOGROUND, State.INTRO,
+                         '"That\'s fine, these don\'t work for everyone! What else can I help you with?"')
+# Let's do a grounding exercise, let's take a moment and name one thing from each of your senses
+# Take 10 deep breaths
+
+df.add_system_transition(State.ABGROUND, State.INTRO,
+                         '"No problem, we can try again some other time, what\'s on your mind?"')
+
+df.add_system_transition(State.HYGIENE, State.HYGIENEF,
+                         '"Maintaining hygiene is important usually but especially so now. Are there any specific '
+                         'things you\'d like to talk about?"')
+df.add_user_transition(State.HYGIENEF, State.GLOVES, gloves)
+df.add_user_transition(State.HYGIENEF, State.WASHING, washing)
+
+df.add_system_transition(State.WASHING, State.WASHINGF,
+                         '"To kill all germs on your hands, make sure to wash your hands with soap and warm water '
+                         'for twenty seconds, \n'
+                         'remember to scrub underneath your fingernails and the backs of your hands as well. Only '
+                         'use hand sanitizer if you do not have soap and water immediately accessible."')
+
+df.add_system_transition(State.GLOVES, State.INTRO,
+                         '"Unless you\'re a medical worker, the CDC does recommend wearing gloves to protect '
+                         'yourself from Coronavirus. Any more hygiene questions?"')
+# todo expand on this
+
+df.add_system_transition(State.SUSPECT, State.SUSPECTF,
+                         '"Oh my, that\'s not good. Have you come into contact with anyone you suspect or '
+                         'know to have been infected?"')
+df.add_user_transition(State.SUSPECTF, State.DIAGNOSE, yes)
+
+df.add_system_transition(State.DIAGNOSE, State.INTRO,
+                         '"I highly recommend you isolate yourself right now. Have you been experiencing a '
+                         'fever, dry cough, fatigue, or any other flu-like symptoms?"')
+# todo complete diagnose paths
+
+df.add_system_transition(State.SAD, State.SADF,
+                         '"It is perfectly normal to feel sad during a time like this, is there something in '
+                         'particular you\'re feeling blue about?"')
+df.add_user_transition(State.SADF, State.FRIENDS, friends)
+
+df.add_system_transition(State.FRIENDS, State.FRIENDSF,
+                         '"That sucks! I\'m sure it must be lonely for you, can I offer some pointers on '
+                         'how to stay connected?"')
+df.add_user_transition(State.FRIENDSF, State.FADVICE, yes)
+
+df.add_system_transition(State.FADVICE, State.INTRO,
+                         '"Texting may feel less engaging, try playing an online game like chess or Settlers '
+                         'that could promote more interactive conversation"')
+
+df.add_system_transition(State.ACTIVITY, State.t0, '"Would you like to hear some suggestions of fun '
+                                                   'activities to try?"')
 
 df.add_user_transition(State.t0, State.t1, r"[#ONT(yes)]")
 df.add_user_transition(State.t0, State.a0, r"[#ONT(no)]")
@@ -569,7 +983,7 @@ df.add_system_transition(State.a21, State.a3, '"I could keep going all day! But 
                                               'that\'s been weighing down on you recently?"')
 
 # activities--what have you been doing? WHAT HAVE YOU BEEN DOING WHAT HAVE YOU BEEN DOING WHAT HAVE YOU BEEN DOING
-df.add_user_transition(State.INTRO, State.b01, r"[#ONT(activities)]")
+df.add_user_transition(State.CURRENT, State.b01, r"[#ONT(current)]")
 
 df.add_system_transition(State.b01, State.b0, '"What have you been doing these past few weeks?"')
 
@@ -677,13 +1091,156 @@ df.add_system_transition(State.b56, State.b57, '"I bet we\'re all tired of sayin
                                                'been thinking about the future lately or would you like to '
                                                'talk about something else?"')
 
-df.add_system_transition(State.b57, State.c0, r"[#ONT(future)]")
-df.add_system_transition(State.b57, State.c1, r"[#ONT(no)]")
+df.add_user_transition(State.b57, State.c0, r"[#ONT(future)]")
+df.add_user_transition(State.b57, State.c1, r"[#ONT(no)]")
 df.set_error_successor(State.b57, State.INTRO)
 
-## have you been thinking about the future lately? or would you like to talk about something else?
+df.add_system_transition(State.FUTURE, State.c2, '"Are you worried about the future?"')
+df.add_system_transition(State.c1, State.c2, '"Are you worried about the future?"')
+df.add_system_transition(State.c3, State.c2, '"Are you worried about the future?"')
+
+df.add_user_transition(State.c2, State.c4, "r[#ONT(yes)]")
+df.add_user_transition(State.c2, State.c5, "r[#ONT(no)]")
+df.set_error_successor(State.c2, State.c6)
+
+df.add_system_transition(State.c4, State.c7, '"Me too. What are you worried about?"')
+df.add_system_transition(State.c5, State.c8, '"I am definitely worried about it. What do you think the future '
+                                             'will look like?"')
+df.add_system_transition(State.c6, State.c8, '"I am definitely worried about it. What do you think the future '
+                                             'will look like?"')
+
+df.add_user_transition(State.c7, State.c16, r"[#ONT(work)]")
+df.add_user_transition(State.c7, State.c9, r"[#ONT(pandemic)]")
+df.add_user_transition(State.c7, State.c10, r"[#ONT(school)]")
+df.add_user_transition(State.c7, State.c11, r"[#ONT(healthcare)]")
+df.add_user_transition(State.c7, State.c12, r"[#ONT(capitalism)]")
+df.add_user_transition(State.c7, State.c13, r"[#ONT(xenophobia)]")
+df.add_user_transition(State.c7, State.c14, r"[#ONT(unsure)]")
+df.set_error_successor(State.c7, State.c15)
+
+df.add_system_transition(State.c16, State.c8, '"We definitely need to re-imagine the job landscape. This '
+                                              'showed us how precarious it is having a society so wholly \n '
+                                              'dependant on money. What do you think the future will look like?"')
+df.add_system_transition(State.c9, State.c8, '"It feels scary that places like New York City and Georgia are '
+                                             'taking steps or have already opened. Even though deaths are \n '
+                                             'lowering, it\'s too soon. What do you think the future will look '
+                                             'like?"')
+df.add_system_transition(State.c10, State.c8, '"There are so many questions--from graduating right now to '
+                                              'what will classes look like in the future. What do you think the '
+                                              'future will look like?"')
+df.add_system_transition(State.c11, State.c8, '"Did you know that there are more prison beds than hospital beds? '
+                                              'This is definitely a wake-up call to rethink our healthcare system. \n'
+                                              ' What do you think the future will look like?"')
+df.add_system_transition(State.c13, State.c8, '"I hope you and everyone you know has been untouched by this violent '
+                                              'racism. It\'s inexcuasble. What do you think the future will look'
+                                              ' like?"')
+df.add_system_transition(State.c12, State.c8, '"This pandemic has made it abundantly clear that capitalism will '
+                                              'be the death of us. Even one person made homeless is one too many, \n '
+                                              'and this government has had an absolute trash response. What do '
+                                              'you think the future will look like?"')
+df.add_system_transition(State.c14, State.c8, '"There is an endless list of things to worry about. What do you '
+                                              'think the future will look like?"')
+
+df.add_user_transition(State.c8, State.c15, '/.*/')
+
+df.add_system_transition(State.c15, State.c16, '"I\'m hoping that we as humans learn from all of the cracks '
+                                               'in our society that this virus showed us. How long do you think \n '
+                                               'it will be until covid is no long an imminent threat?"')
+
+df.add_user_transition(State.c16, State.c17, '/.*/')
+
+df.add_system_transition(State.c17, State.INTRO, '"It alarms me that some places are starting to open up, like '
+                                                 'Georgia. It seems so reckless. This is getting kind of pessimistic. '
+                                                 '\n '
+                                                 'Can we talk about something else? What\'s been on your mind?"')
+
+# TRANSITION BRANCH
+df.add_system_transition(State.TRANSITION, State.d0, '"Are you a student?"')
+
+df.add_user_transition(State.d0, State.d1, r"[#ONT(yes)]")
+df.add_user_transition(State.d0, State.d2, r"[#ONT(no)]")
+df.set_error_successor(State.d0, State.d3)
+
+df.add_system_transition(State.d1, State.d4, '"Did you have to move out and transition to online classes?"')
+df.add_system_transition(State.d2, State.d5, '"Were you one of the unfortunate people who were laid off?"')
+df.add_system_transition(State.d3, State.d5, '"Were you one of the unfortunate people who were laid off?"')
+
+df.add_system_transition(State.d4, State.d7, '"How have you been adjusting to life at home?"')
+
+df.add_user_transition(State.d4, State.d8, r"[#ONT(positive)]")
+df.add_user_transition(State.d4, State.d9, r"[#ONT(negative)]")
+df.set_error_successor(State.d9, State.d10)
+
+df.add_system_transition(State.d8, State.d11, '"I\'m glad you\'re enjoying life at home! Must be nice to be in '
+                                              'an environment that is so familiar. How have you been handling \n '
+                                              'transitioning into online classes?"')
+df.add_system_transition(State.d9, State.d12, '"I know what you mean. Home life is challenging, especially when '
+                                              'it\'s hostile. How have you been handling transitioning into \n '
+                                              'online classes?"')
+df.add_system_transition(State.d10, State.d13, '"Your feelings about being at home are probably impacting your school '
+                                               'work. How have you been handling transitioning into online classes?"')
+
+df.add_user_transition(State.d11, State.d14, r"[#ONT(positive)]")
+df.add_user_transition(State.d12, State.d15, r"[#ONT(negative)]")
+df.set_error_successor(State.d13, State.d16)
+
+df.add_system_transition(State.d14, State.d5, '"Well! That\'s good to hear. Not everyone transitioned so smoothly. '
+                                              'Were you one of the unfortunate people who were laid off?"')
+df.add_system_transition(State.d15, State.d5, '"I hope professors all around are recognizing that this is a hard '
+                                              'time for anyone to be concentrating as usual. Were you one of the \n '
+                                              'unforunate people who were laid off?"')
+df.add_system_transition(State.d16, State.d5, '"Either way, professors should be giving a little leeway. Were you one '
+                                              'of the unfortunate people who were laid off?"')
+
+df.add_user_transition(State.d5, State.d17, r"[#ONT(yes)]")
+df.add_user_transition(State.d5, State.d17, r"[#ONT(no)]")
+df.set_error_successor(State.d5, State.d17)
+
+df.add_system_transition(State.d17, State.d18, '"Hopefully, everything turns out alright. That must be a lot to be '
+                                               'dealing with right now. Maybe you\'re stressed. Would you like to '
+                                               'go through a grounding exercise? Or talk about something else?"')
+df.add_system_transition(State.d17, State.d19, '"Count yourself lucky then. Would you like to talk about '
+                                               'something else?"')
+
+df.add_user_transition(State.d18, State.d20, r"[#ONT(grounding)]")
+df.set_error_successor(State.d18, State.INTRO)
+
+#KEMP branch
+
+df.add_system_transition(State.KEMP, State.e0, '"How do you feel about Kemp opening up the state?"')
+
+df.add_user_transition(State.e0, State.e1, r"[#ONT(positive)]")
+df.add_user_transition(State.e0, State.e2, r"[#ONT(negative)]")
+df.set_error_successor(State.e0, State.e3)
+
+df.add_system_transition(State.e1, State.e4, '"Anything positive that will happen will be short-lived, and '
+                                             'heavily outweighed by all of the potential people he\'s putting \n '
+                                             'at risk, most of which are low-income and people of color. Don\'t '
+                                             'you find it ironic that Georgia has opened up, even when the CDC '
+                                             'is here?"')
+df.add_system_transition(State.e2, State.e4, '"I\'m right there with you. The decision was utterly reckless, and '
+                                             'the most vulnerable will be exposed. Isn\'t it ironic that Georgia '
+                                             'has opened up, despite the CDC is in Georgia?"')
+
+df.add_user_transition(State.e4, State.e5, '/.*/')
+
+df.add_system_transition(State.e5, State.e6, '"Did you know that Georgia was one of the last states to go on '
+                                             'lock-down? And Kemp didn\'t realize asymptotic people could still \n '
+                                             'be carriers. How long do you think we should be on lockdown?"')
+
+df.add_user_transition(State.e6, State.e7, '/.*/')
+
+df.add_system_transition(State.e7, State.e8, '"Regardless of what the state says, I will not be re-joining society '
+                                             'anytime soon. I don\'t think we\'re prepared at all. Will you be '
+                                             're-joining society any time soon?"')
+
+df.add_user_transition(State.e8, State.e9, r"[#ONT(yes)]")
+df.add_user_transition(State.e8, State.e10, r"[#ONT(no)]")
+df.set_error_successor(State.e8, State.e11)
+
+df.add_system_transition(State.e9, State.INTRO, '"Good luck. Do you have anything else on your mind?"')
+df.add_system_transition(State.e10, State.INTRO, '"Good idea. We can\'t let this governer but profit over people. '
+                                               'Do you have anything else on your mind?"')
 
 
-df.add_user_transition()
-if __name__ == '__main__':
-    df.run(debugging=False)
+df.run(debugging=True)

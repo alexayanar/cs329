@@ -1,4 +1,4 @@
-from emora_stdm import KnowledgeBase, DialogueFlow, NatexNLU
+from emora_stdm import KnowledgeBase, DialogueFlow, Macro, NatexNLU
 from enum import Enum, auto
 from covid import Covid
 
@@ -184,8 +184,6 @@ class State(Enum):
     b56 = auto()
     b57 = auto()
     c0 = auto()
-    c00 = auto()
-    c02 = auto()
     c1 = auto()
     c2 = auto()
     c3 = auto()
@@ -231,8 +229,6 @@ class State(Enum):
     d18 = auto()
     d19 = auto()
     d20 = auto()
-    d20a = auto()
-    d20b = auto()
     z0 = auto()
     z05 = auto()
     z005 = auto()
@@ -312,11 +308,12 @@ class State(Enum):
     p53 = auto()
     p54 = auto()
     p55 = auto()
-    s0 = auto()
-    s1 = auto()
-    s2 = auto()
-    s3 = auto()
-    s4 = auto()
+
+
+
+
+
+
 
     PIVOT1 = 200
     TEST = 201
@@ -658,7 +655,7 @@ ontology = {
             "death toll", "death", "short", "short lived",
             "idiot", "short-sighted", "inconsiderate",
             "ruling class", "dangerous", "reckless",
-            "die", "struggle", "struggling"
+            "die"
         ], "grounding": [
             "grounding excercise", "yes", "breathe",
             "yes", "yeah", "yup", "yea", "ya", "sure",
@@ -801,17 +798,12 @@ df.add_user_transition(State.STRESS1, State.STRESS3, quarantine)
 df.add_user_transition(State.STRESS1, State.p2, family)
 df.add_user_transition(State.STRESS1, State.p13, school)
 df.add_user_transition(State.STRESS1, State.p16, homework)
-df.set_error_successor(State.STRESS1, State.s1)
+df.set_error_successor(State.STRESS1, State.err10)
 
-df.add_system_transition(State.s1, State.s2, '"Oh, man. That sucks. Would you like to talk about something else?"')
-df.add_system_transition(State.s4, State.s2, '"Hm. I\'m not understanding. Can we talk about something else?"')
 
-df.add_user_transition(State.s2, State.s3, r"[#ONT(yes)]")
-df.set_error_successor(State.s2, State.s4)
-
-df.add_system_transition(State.s4, State.INTRO, '"What\'s been on your mind?"')
-df.add_system_transition(State.s3, State.INTRO, '"What\'s been on your mind?"')
-
+df.add_system_transition(State.err10, State.p43, '"Sounds tough. But would you like to destress with me by doing a grounding exercise?"')
+df.add_system_transition(State.p43, State.INHALE, yes)
+df.add_system_transition(State.p43, State.NOGROUND, no)
 
 df.add_system_transition(State.p13, State.p14, '"Yeah I can imagine! Who could\'ve expected they\'d end physical classes? Are you keeping up with your assignments?"')
 df.add_user_transition(State.p14, State.p19, yes)
@@ -832,12 +824,12 @@ df.add_system_transition(State.p22, State.p24, '"Awesome! Keep it updated and re
 df.add_system_transition(State.p23, State.STRESS1, '"I highly recommend it, you can use an app like iProcrastinate or Simplenote, some people also like using spreadsheets \n'
                                                'you can keep an Excel file or use Google Sheets. Is there anything else stressing you out?"')
 df.add_user_transition(State.p24, State.INHALE, yes)
-df.add_user_transition(State.p24, State.INTRO, no)
+df.add_user_transition(State.p24, State.NOGROUND, no)
 
 
 df.add_system_transition(State.p19, State.p21, '"Regardless, I can understand how overwhelming this must feel. Would you like to do a quick grounding exercise with me?"')
 df.add_user_transition(State.p21, State.INHALE, yes)
-df.set_error_successor(State.p21, State.INTRO)
+df.set_error_successor(State.p21, State.NOGROUND)
 
 
 df.add_system_transition(State.STRESS3, State.p19, '"This situation is unprecedented in this generation, I understand how quarantine can be stressful. Is there particular stressor \n'
@@ -891,16 +883,18 @@ df.set_error_successor(State.INHALEF, State.VISION)
 df.add_system_transition(State.VISION, State.VISIONF, '"Now, look around you and tell me something you can see right now."')
 df.add_user_transition(State.VISIONF, State.FEEL, '[$thing=#POS(noun)]')
 df.add_user_transition(State.VISIONF, State.ABGROUND, quit)
-df.set_error_successor(State.VISIONF, State.s4)
+df.set_error_successor(State.VISIONF, State.ERR2)
 
+df.add_system_transition(State.ERR2, State.qv, '"Huh, not sure I recognize that. Do you still want to do this?"')
 df.add_user_transition(State.qv, State.VISION, yes)
 df.add_user_transition(State.qv, State.ABGROUND, no)
 
 df.add_system_transition(State.FEEL, State.FEELF, '"A "$thing", how pretty, now tell me, what\'s something around you that you can feel with your hands? Describe it\'s texture."')
 df.add_user_transition(State.FEELF, State.HEAR, '[$thing=#POS(adj)]')
 df.add_user_transition(State.FEELF, State.ABGROUND, quit)
-df.set_error_successor(State.FEELF, State.s4)
+df.set_error_successor(State.FEELF, State.ERR3)
 
+df.add_system_transition(State.ERR3, State.qt, '"What are you feeling there? Um, do you still want to do this exercise"')
 df.add_user_transition(State.qt, State.FEEL, yes)
 df.add_user_transition(State.qt, State.ABGROUND, no)
 
@@ -908,8 +902,9 @@ df.add_user_transition(State.qt, State.ABGROUND, no)
 df.add_system_transition(State.HEAR, State.HEARF, '"Excellent, something" $thing "! What an interesting texture. Now, what is something you can currently hear in the background?"')
 df.add_user_transition(State.HEARF, State.SMELL, '[$thing=#POS(noun)]')
 df.add_user_transition(State.HEARF, State.ABGROUND, quit)
-df.set_error_successor(State.HEARF, State.s4)
+df.set_error_successor(State.HEARF, State.ERR4)
 
+df.add_system_transition(State.ERR4, State.qh, '"I don\'t really think that was a answer. Do you want to try again?"')
 df.add_user_transition(State.qh, State.HEAR, yes)
 df.add_user_transition(State.qh, State.ABGROUND, no)
 
@@ -917,16 +912,18 @@ df.add_user_transition(State.qh, State.ABGROUND, no)
 df.add_system_transition(State.SMELL, State.SMELLF, '"Ah yes the sound of" $thing ", that\'s a good answer! Close your eyes and breathe through your nose. Tell me what you can smell right now."')
 df.add_user_transition(State.SMELLF, State.ABGROUND, quit)
 df.add_user_transition(State.SMELLF, State.TASTE, '[$thing=#POS(noun)]')
-df.set_error_successor(State.SMELLF, State.s4)
+df.set_error_successor(State.SMELLF, State.ERR5)
 
+df.add_system_transition(State.ERR5, State.qs, '"I don\'t have a nose but I\'m pretty sure you don\'t smell that. Do you want to do something else?"')
 df.add_user_transition(State.qs, State.ABGROUND, yes)
 df.add_user_transition(State.qs, State.SMELL, no)
 
 df.add_system_transition(State.TASTE, State.TASTEF, '"Ahh, the smell of" $thing ",just one more, focus on something you\'ve tasted recently, what was it?"')
 df.add_user_transition(State.TASTEF, State.ABGROUND, quit)
 df.add_user_transition(State.TASTEF, State.COMGROUND, '[$thing=#POS(noun)]')
-df.set_error_successor(State.TASTEF, State.s4)
+df.set_error_successor(State.TASTEF, State.ERR6)
 
+df.add_system_transition(State.ERR6, State.qta, '"Did I hear correctly? If you don\'t want that\'s fine, do you want to do something else?"')
 df.add_user_transition(State.qta, State.ABGROUND, yes)
 df.add_user_transition(State.qta, State.TASTE, no)
 
@@ -943,11 +940,12 @@ df.add_system_transition(State.HYGIENE, State.HYGIENEF, '"Maintaining hygiene is
 df.add_user_transition(State.HYGIENEF, State.GLOVES, '[$plural=#ONT(ppe_plur)]')
 df.add_user_transition(State.HYGIENEF, State.p0, '[$sing=#ONT(ppe_sing)]')
 df.add_user_transition(State.HYGIENEF, State.WASHING, washing)
-df.set_error_successor(State.HYGIENEF, State.s4)
+df.set_error_successor(State.HYGIENEF, State.err12)
 
+df.add_system_transition(State.err12, State.p45, '"I\'m actually not sure about that, sorry. Do you want to talk about activities instead?"')
 df.add_user_transition(State.p45, State.ACTIVITY, yes)
 df.add_user_transition(State.p45, State.p46, no)
-df.set_error_successor(State.p45, State.s4)
+df.set_error_successor(State.p45, State.err12)
 
 df.add_system_transition(State.p46, State.p47, '"No problem, what do you want to talk about?"')
 
@@ -1416,11 +1414,8 @@ df.add_system_transition(State.b56, State.b57, '"I bet we\'re all tired of sayin
                                                'talk about something else?"')
 
 df.add_user_transition(State.b57, State.c0, r"[#ONT(future)]")
-df.add_user_transition(State.b57, State.c00, r"[#ONT(no)]")
-df.set_error_successor(State.b57, State.c02)
-
-df.add_system_transition(State.c00, State.INTRO, '"What\'s on your mind?"')
-df.add_system_transition(State.c02, State.INTRO, '"What\'s on your mind?"')
+df.add_user_transition(State.b57, State.INTRO, r"[#ONT(no)]")
+df.set_error_successor(State.b57, State.INTRO)
 
 df.add_system_transition(State.FUTURE, State.c2, '"Are you worried about the future?"')
 df.add_system_transition(State.c0, State.c2, '"Are you worried about the future?"')
@@ -1500,21 +1495,21 @@ df.add_system_transition(State.d1, State.d4, '"Did you have to move out and tran
 df.add_system_transition(State.d2, State.d5, '"Were you one of the unfortunate people who were laid off?"')
 df.add_system_transition(State.d3, State.d5, '"Were you one of the unfortunate people who were laid off?"')
 
-df.add_user_transition(State.d4, State.d04, r"[#ONT(yes)]")
-df.add_user_transition(State.d4, State.d2, r"[#ONT(no)]")
+df.add_user_transition(State.d4, State.d04, "r[#ONT(yes)]")
+df.add_user_transition(State.d4, State.d2, "r[#ONT(no)]")
 df.set_error_successor(State.d4, State.d004)
 
-df.add_system_transition(State.d04, State.d7, '"How have you been adjusting to life?"')
+df.add_system_transition(State.d4, State.d7, '"How have you been adjusting to life?"')
 df.add_system_transition(State.d004, State.d7, '"How have you been adjusting to life?"')
 
 df.add_user_transition(State.d7, State.d8, r"[#ONT(positive)]")
 df.add_user_transition(State.d7, State.d9, r"[#ONT(negative)]")
 df.set_error_successor(State.d7, State.d10)
 
-df.add_system_transition(State.d8, State.d13, '"I\'m glad you\'re enjoying life at home! Must be nice to be in '
+df.add_system_transition(State.d8, State.d11, '"I\'m glad you\'re enjoying life at home! Must be nice to be in '
                                               'an environment that is so familiar. How have you been handling \n '
                                               'transitioning into online classes?"')
-df.add_system_transition(State.d9, State.d13, '"I know what you mean. Home life is challenging, especially when '
+df.add_system_transition(State.d9, State.d12, '"I know what you mean. Home life is challenging, especially when '
                                               'it\'s hostile. How have you been handling transitioning into \n '
                                               'online classes?"')
 df.add_system_transition(State.d10, State.d13, '"Your feelings about being at home are probably impacting your school '
@@ -1539,16 +1534,13 @@ df.set_error_successor(State.d5, State.d17c)
 df.add_system_transition(State.d17a, State.d18, '"Hopefully, everything turns out alright. That must be a lot to be '
                                                'dealing with right now. Maybe you\'re stressed. Would you like to \n'
                                                'go through a grounding exercise? Or talk about something else?"')
-df.add_system_transition(State.d17b, State.d18, '"Count yourself lucky then. Maybe you should consider helping '
+df.add_system_transition(State.d17b, State.d19, '"Count yourself lucky then. Maybe you should consider helping '
                                                 'where you can. \n Would you like to talk about '
                                                'something else?"')
 
 df.add_user_transition(State.d18, State.d20, r"[#ONT(grounding)]")
-df.add_user_transition(State.d18, State.d20a, r"[#ONT(yes)]")
-df.set_error_successor(State.d18, State.d20b)
+df.set_error_successor(State.d18, State.INTRO)
 
-df.add_system_transition(State.d20a, State.INTRO, '"What\'s on your mind?"')
-df.add_system_transition(State.d20b, State.INTRO, '"What\'s on your mind?"')
 #KEMP branch
 
 df.add_system_transition(State.KEMP, State.z0, '"How do you feel about Kemp opening up the state?"')
@@ -1603,4 +1595,4 @@ df.add_system_transition(State.z11, State.INTRO, '"We can\'t let this governer b
                                                'Do you have anything else on your mind?"')
 
 
-df.run(debugging=False)
+df.run(debugging=True)

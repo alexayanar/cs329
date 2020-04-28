@@ -393,9 +393,19 @@ ontology = {
             "number of"
         ], "stress": [
             "stress", "stressed",
-            "pressure"
+            "pressure",
+            "overwhelmed",
+            "overwhelming",
+            "exhausted",
+            "fatigue",
+            "exhausting"
         ], "hygiene": [
-            "cleanliness", "hygiene"
+            "cleanliness", "hygiene",
+            "clean", "dirty",
+            "shower",
+            "smell bad",
+            "bedridden",
+            "brush"
         ], "test": [
             "test"
         ], "gloves": [
@@ -556,8 +566,6 @@ ontology = {
             "see friends", "hit up", "my friends",
             "friends", "hanging out", "friend",
             "family", "extended"
-        ], "current": [  # takes you to current branch
-            "current life", "quarantine"
         ], "normal": [
             "normalcy", "normal", "routine", "go back",
             "routines"
@@ -623,7 +631,9 @@ ontology = {
             "unemployed", "adjusting", "school", "class",
             "classes", "university", "universities", "job",
             "transition", "transitioning", "transitioned",
-            "adjusted"
+            "adjusted", "quarantine", "social", "distancing",
+            "isolation", "self-isolation", "social distancing",
+            "unemployment"
         ], "positive": [
             "good", "well", "okay", "ok",
             "nice", "great", "excellent", "excellent",
@@ -713,7 +723,6 @@ yes = r"[$response=#ONT(yes)]"
 gloves = r"[$response=#ONT(gloves)]"
 suspect_old = r"[$response=#ONT(suspect)]"
 activities = r"[$response=#ONT(activities)]"
-current = r"[$response=#ONT(current)]"
 future = r"[$response=#ONT(future)]"
 transition = r"[$response=#ONT(transition)]"
 kemp = r"[$response=#ONT(kemp)]"
@@ -762,7 +771,6 @@ df.add_user_transition(State.INTRO, State.SUSPECT, suspect)
 df.add_user_transition(State.INTRO, State.SAD, sad)
 df.add_user_transition(State.INTRO, State.VACCINE, vaccine)
 df.add_user_transition(State.INTRO, State.ACTIVITY, activities)
-df.add_user_transition(State.INTRO, State.CURRENT, current)
 df.add_user_transition(State.INTRO, State.FUTURE, future)
 df.add_user_transition(State.INTRO, State.TRANSITION, transition)
 df.add_user_transition(State.INTRO, State.KEMP, kemp)

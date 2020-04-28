@@ -55,6 +55,7 @@ class State(Enum):
     TRANSITION = auto()
     CURRENT = auto()
     ACTIVITIES = auto()
+    UNSURE = auto()
     KEMP = auto()
     a0 = auto()
     b0 = auto()
@@ -118,6 +119,7 @@ class State(Enum):
     t38 = auto()
     t39 = auto()
     t40 = auto()
+    b01 = auto()
     b1 = auto()
     b2 = auto()
     b3 = auto()
@@ -225,7 +227,6 @@ class State(Enum):
     e8 = auto()
     e9 = auto()
     e10 = auto()
-
 
     PIVOT1 = 200
     TEST = 201
@@ -562,6 +563,7 @@ future = r"[$response=#ONT(future)]"
 transition = r"[$response=#ONT(transition)]"
 kemp = r"[$response=#ONT(kemp)]"
 
+
 suspect = NatexNLU(
     '{[i {think, believe, feel like} i {caught, got, have, contracted} {coronavirus, COVID, CoViD, covid}], '
     '[i {might, may} have {coronavirus, COVID, CoViD, covid}]}')
@@ -574,11 +576,12 @@ vaccine = r"[$response=#ONT(vaccine)]"
 washing = r"[$response=#ONT(washing)]"
 gardening = r"[$response=#ONT(gardening)]"
 
+
 actCases = str(covid.get_total_active_cases())
 recCases = str(covid.get_total_recovered())
 deaths = str(covid.get_total_deaths())
 
-# err = NatexNLG('[!{Hmm, Huh}, could you say that again`?`]')
+err = NatexNLG('[!{Hmm, Huh}, could you say that again`?`]')
 
 df.add_system_transition(State.START, State.INTRO,
                          '"Hi! I\'m Qbot, your friend in quarantine! What would you like to talk about?"')
@@ -594,6 +597,8 @@ df.add_user_transition(State.INTRO, State.CURRENT, current)
 df.add_user_transition(State.INTRO, State.FUTURE, future)
 df.add_user_transition(State.INTRO, State.TRANSITION, transition)
 df.add_user_transition(State.INTRO, State.KEMP, kemp)
+df.add_user_transition(State.INTRO, State.UNSURE, unsure)
+
 # one branch for what can you do
 # another grounding exercise
 # practical advice for stress at home
@@ -604,10 +609,11 @@ df.set_error_successor(State.INTRO, State.ERR1)
 df.add_system_transition(State.ERR1, State.INTRO, NatexNLG('[!{Hmm, Huh, Uhh, Mmm}, sorry I didn`\'`t get that, '
                                                            'could you {rephrase that, say that again}`?`]'))
 
+
 df.add_system_transition(State.UPDATES, State.INTRO, '"As of now, there are "' + actCases + '" confirmed and active '
                                                     'cases of COVID-19 in the world,"' + recCases + '"recoveries, and"'
-                                                    + deaths + '" deaths, \n I sure hope you\'re staying '
-                                                    'safe out there! What else can I help with?"')
+                         + deaths + '" deaths, \n I sure hope you\'re staying '
+                                    'safe out there! What else can I help with?"')
 
 df.add_system_transition(State.VACCINE, State.VACCINEF, '"Unforuntately, as of now there is no vaccine for SARS-CoV, '
                                                         'would you like some hygiene tips for staying healthy \n '
@@ -616,8 +622,8 @@ df.add_system_transition(State.VACCINE, State.VACCINEF, '"Unforuntately, as of n
 df.add_user_transition(State.VACCINEF, State.HYGIENE, yes)
 df.add_user_transition(State.VACCINEF, State.PIVOT1, no)
 
-df.add_system_transition(State.STRESS, State.STRESS1,'"I understand, life in quarantine is not easy. '
-                                                     'What\'s making you feel stressed right now?"')
+df.add_system_transition(State.STRESS, State.STRESS1, '"I understand, life in quarantine is not easy. '
+                                                      'What\'s making you feel stressed right now?"')
 
 df.add_user_transition(State.STRESS1, State.STRESS2, unsure)
 df.add_user_transition(State.STRESS1, State.STRESS3, test)
@@ -1205,7 +1211,7 @@ df.add_system_transition(State.d17, State.d19, '"Count yourself lucky then. Woul
 df.add_user_transition(State.d18, State.d20, r"[#ONT(grounding)]")
 df.set_error_successor(State.d18, State.INTRO)
 
-#KEMP branch
+# KEMP branch
 
 df.add_system_transition(State.KEMP, State.e0, '"How do you feel about Kemp opening up the state?"')
 
@@ -1240,7 +1246,6 @@ df.set_error_successor(State.e8, State.e11)
 
 df.add_system_transition(State.e9, State.INTRO, '"Good luck. Do you have anything else on your mind?"')
 df.add_system_transition(State.e10, State.INTRO, '"Good idea. We can\'t let this governer but profit over people. '
-                                               'Do you have anything else on your mind?"')
-
+                                                 'Do you have anything else on your mind?"')
 
 df.run(debugging=True)

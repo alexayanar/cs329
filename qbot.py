@@ -821,8 +821,10 @@ df.add_system_transition(State.p16, State.p17, '"Oof, It\'s hard having homework
 df.add_user_transition(State.p17, State.p18, yes)
 df.add_user_transition(State.p17, State.p19, no)
 
-df.add_system_transition(State.p18, State.p20, '"Ha, too much Netflix and uhh...nevermind. Trust me when I say you\'re not alone on this boat.\n'
-                                               'Try to set daily goals and reminders to get back on track. You can also try emailing you professor for extensions\n'
+df.add_system_transition(State.p18, State.p20, '"Ha, too much Netflix and uhh...nevermind. Trust me when I say you\'re '
+                                               'not alone on this boat.\n'
+                                               'Try to set daily goals and reminders to get back on track. You can also '
+                                               'try emailing you professor for extensions\n'
                                                'Do you use a planner?"')
 df.add_user_transition(State.p20, State.p22, yes)
 df.add_user_transition(State.p20, State.p23, no)
@@ -1084,7 +1086,7 @@ df.add_system_transition(State.t8, State.t29, '"I love action! I recently watche
                                               'in tears. I highly recommend! \n Would you like to hear another '
                                               'suggestion of activities to do other than movie night?"')
 df.add_system_transition(State.t9, State.t29, '"I love adventure! It really excites you huh. Oh to be \n'
-                                              'an adventurer! How exciting. \n I would recommend Jumanji 2--'
+                                              'an adventurer! How grand. \n I would recommend Jumanji 2--'
                                               'it truly had me in tears. Would you like to hear another '
                                               'suggestion of activities \n to do other than movie night?"')
 df.add_system_transition(State.t10, State.t29, '"Comedy is such a hit or miss because a lot of it relies \n'
@@ -1174,11 +1176,11 @@ df.add_system_transition(State.t26, State.t29, '"Western, huh? Honestly, I don\'
                                                'suggestion for activities to do other than a movie night?"')
 df.add_system_transition(State.t27, State.t29, '"Honestly, we do not give kids movies enough credit. They are '
                                                'so good and contain so \n many good life stories. Like Inside Out. '
-                                               'A total masterpiece. Another one that I like is Jumanji. I '
+                                               'A total masterpiece. Another one that I like is Jumanji 2. I '
                                                'recently watched it \n so I guess I have Jumanji in the brain, '
                                                'but it is genuinely funny. Would you like to hear another '
                                                'suggestion for activities to do other than a movie night?"')
-df.add_system_transition(State.t28, State.t29, '"If I had to give you a song that you will like no matter what, '
+df.add_system_transition(State.t28, State.t29, '"If I had to give you a movie that you will like no matter what, '
                                                'I would place my bet on \n'
                                                'Jumanji 2. Jack Black\'s performance in it was immaculate--truly '
                                                'what a funny guy. \n Kevin Hart was pretty good too. You should watch '
@@ -1270,11 +1272,11 @@ df.add_user_transition(State.t39, State.t40, r"[$response=#ONT(yes)]")
 df.add_user_transition(State.t39, State.a20, r"[$response=#ONT(no)]")
 df.set_error_successor(State.t39, State.a21)
 
-df.add_system_transition(State.t40, State.a0, '"I think one of the best activities to be doing right now is to imagine '
+df.add_system_transition(State.t40, State.a2, '"I think one of the best activities to be doing right now is to imagine '
                                               'the future. What is our world going \n to look like after this? Have we '
-                                              'now understood the we need to fundamentally reorganize society? I hope '
-                                              'so. I hope you try out \n all of the suggestions I had and come back '
-                                              'after you have tried them all. Goodbye!"')
+                                              'now understood the we need to fundamentally reorganize society? \n All '
+                                              'of these activities help me to calm down. What do you do to help '
+                                              'keep you calm?"')
 df.add_system_transition(State.a20, State.a2, '"You\'ll definitely be kept busy if you follow these suggestions. '
                                                  'All of them help me calm down. What sorts of activities do you do to '
                                               'keep you calm?"')
@@ -1458,7 +1460,7 @@ df.add_system_transition(State.c11, State.c8, '"Did you know that there are more
                                               'This is definitely a wake-up call to rethink our healthcare system. \n'
                                               ' What do you think the future will look like?"')
 df.add_system_transition(State.c13, State.c8, '"I hope you and everyone you know has been untouched by this violent '
-                                              'racism. It\'s inexcuasble. What do you think the future will look'
+                                              'racism. It\'s inexusasble. What do you think the future will look'
                                               ' like?"')
 df.add_system_transition(State.c12, State.c8, '"This pandemic has made it abundantly clear that capitalism will '
                                               'be the death of us. Even one person made homeless is one too many, \n '
@@ -1542,8 +1544,11 @@ df.add_system_transition(State.d17a, State.d18, '"Hopefully, everything turns ou
 df.add_system_transition(State.d17b, State.d18, '"Count yourself lucky then. Maybe you should consider helping '
                                                 'where you can. \n Would you like to talk about '
                                                'something else?"')
+df.add_system_transition(State.d17c, State.d18, '"Hopefully, everything turns out alright. That must be a lot to be '
+                                               'dealing with right now. Maybe you\'re stressed. Would you like to \n'
+                                               'go through a grounding exercise? Or talk about something else?"')
 
-df.add_user_transition(State.d18, State.d20, r"[#ONT(grounding)]")
+df.add_user_transition(State.d18, State.INHALE, r"[#ONT(grounding)]")
 df.add_user_transition(State.d18, State.d20a, r"[#ONT(yes)]")
 df.set_error_successor(State.d18, State.d20b)
 
@@ -1566,6 +1571,8 @@ df.add_system_transition(State.z1, State.z4, '"While there may be some sense of 
 df.add_system_transition(State.z2, State.z4, '"I\'m right there with you. The decision was utterly reckless, and '
                                              'the most vulnerable will be exposed. \n Isn\'t it ironic that Georgia '
                                              'has opened up, despite the CDC is in Georgia?"')
+df.add_system_transition(State.z3, State.z4, '"Hmm--isn\'t it ironic that Georgia has opened up, despite '
+                                             'the CDC is in Georgia?"')
 
 df.add_user_transition(State.z4, State.z5, r"[#ONT(yes)]")
 df.add_user_transition(State.z4, State.z05, r"[#ONT(no)]")
@@ -1597,10 +1604,10 @@ df.add_user_transition(State.z20, State.z10, r"[#ONT(no)]")
 df.set_error_successor(State.z20, State.z11)
 
 df.add_system_transition(State.z9, State.INTRO, '"Good luck. Do you have anything else on your mind?"')
-df.add_system_transition(State.z10, State.INTRO, '"Good idea. We can\'t let this governer but profit over people. '
-                                               'Do you have anything else on your mind?"')
-df.add_system_transition(State.z11, State.INTRO, '"We can\'t let this governer but profit over people. '
-                                               'Do you have anything else on your mind?"')
+df.add_system_transition(State.z10, State.INTRO, '"Good idea. We can\'t let this governor put profit over people. '
+                                               'What else is on your mind?"')
+df.add_system_transition(State.z11, State.INTRO, '"We can\'t let this governor put profit over people. '
+                                               'What else is on your mind?"')
 
 
 df.run(debugging=False)
